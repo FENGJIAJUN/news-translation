@@ -1,4 +1,4 @@
-# 用30行Python代码实现短信通知Twitch主播上线
+# 用 30 行 Python 代码实现短信通知 Twitch 主播上线
 > * 原文地址：[A Python project in 30 lines of code: how to set up an SMS notification when your favorite Twitcher is streaming](https://www.freecodecamp.org/news/20-lines-of-python-code-get-notified-by-sms-when-your-favorite-team-scores-a-goal/)
 > * 原文作者：Pierre
 > * 译者：FENGJIAJUN
@@ -6,11 +6,11 @@
 
 ![A Python project in 30 lines of code: how to set up an SMS notification when your favorite Twitcher is streaming](https://images.unsplash.com/photo-1561736778-92e52a7769ef?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjExNzczfQ)
 
-大家好 :) 今天我将开启一个新的针对Python初学者系列文章。简言之，我将会尝试更多新的工具、编写尽可能少的代码完成一个有趣的项目。
+大家好 :) 今天我将开启一个新的针对 Python 初学者系列文章。简言之，我将会尝试更多新的工具、编写尽可能少的代码完成一个有趣的项目。
 
-例如，我们将要在今天学习使用Twilio API、Twitch API、在Heroku上发布项目。我将会教会你如何在每月只花费10美分的情况下，用30行代码实现你的“Twitch直播”短信通知。
+例如，我们将要在今天学习使用 Twilio API、Twitch API、在 Heroku 上发布项目。我将会教会你如何在每月只花费 10 美分的情况下，用 30 行代码实现你的“Twitch直播”短信通知。
 
-**前提**: 你至少需要具备基本的git命令行（commit & push）以及在机器上执行Python程序的能力。果你需要这些知识点的帮助，我想你推荐下面两篇文章：
+**前提**: 你至少需要具备基本的 git 命令行（commit & push）以及在机器上执行 Python 程序的能力。果你需要这些知识点的帮助，我想你推荐下面两篇文章：
 
 [Python 3 Installation & Setup Guide][1]
 
@@ -20,46 +20,46 @@
 
 -   Twitch API
 -   Twilio API
--   Heroku发布项目
--   Heroku启动调度程序
+-   Heroku 发布项目
+-   Heroku 启动调度程序
 
 **将要构建的项目:**
 
 要求很简单：我们想要在某个主播正在直播的时候接收到一条短信通知，我们想要知道主播何时上线以及何时退出直播，并且这个通知程序全天都在自动运行。
 
-我们将把整个项目分成3个部分。首先，我们将会着手在代码层面获悉一个特定主播的上线。之后学习如何去接收到一条主播上线的短信。最终来学习如何让这段代码执行X分钟，因此我们将不会再错过我们喜欢的主播的直播时刻。
+我们将把整个项目分成 3 个部分。首先，我们将会着手在代码层面获悉一个特定主播的上线。之后学习如何去接收到一条主播上线的短信。最终来学习如何让这段代码执行X分钟，因此我们将不会再错过我们喜欢的主播的直播时刻。
 
 # 主播是否正在直播？
 
-为了知道一个主播是否正在直播，我们可以有两种方式实现：第一种方式，到直播间里去查找是否有“Live”徽章。
+为了知道一个主播是否正在直播，我们可以有两种方式实现：第一种方式，到直播间里去查找是否有"Live"徽章。
 
 ![](https://www.freecodecamp.org/news/content/images/2019/08/Capture-d-e-cran-2019-08-14-a--15.49.31.png)
 
 主播直播时候的截图
 
-这个过程涉及到网络爬虫，而且这个功能不是20行左右的Python代码能完成的。Twitch使用了非常多的JS脚本代码，一个简单的request.get()是不足以达到我们要求的。
+这个过程涉及到网络爬虫，而且这个功能不是 20 行左右的 Python 代码能完成的。Twitch 使用了非常多的 JS 脚本代码，一个简单的 request.get() 是不足以达到我们要求的。
 
-对于使用爬虫去爬取直播信息，我们将会借助Chrome浏览器抓取正如你在截图所看到的这个网页内容。这种方式是可行的，但是这将会产生超过30行以上代码。如果你想要了解更多相关，别迟疑，可以参考我最近的网页抓取指南文章[网页抓取指南][4]。
+对于使用爬虫去爬取直播信息，我们将会借助 Chrome 浏览器抓取正如你在截图所看到的这个网页内容。这种方式是可行的，但是这将会产生超过 30 行以上代码。如果你想要了解更多相关，别迟疑，可以参考我最近的网页抓取指南文章[网页抓取指南][4]。
 
-除了抓取Twitch网页这种方式外，我们还可以使用Twitch的API。对于不熟悉API这个术语的人做出解释：API是应用程序编程接口，允许网站向任何人（主要是针对开发人员）公开他们的功能和数据。Twitch的API主要通过HTTP协议对外开放，这说明我们可以用一个HTTP请求去获取到许多的信息，和做许多的事情。
+除了抓取 Twitch 网页这种方式外，我们还可以使用 Twitch 的 API。有的读者可能不了解 API 这个术语，这里我们解释一下：API 是应用程序编程接口，允许网站向任何人（主要是开发者）公开网站的特性和数据。Twitch 的 API 是通过 HTTP 协议对外开放，也就是说我们可以通过一个简单的 HTTP 请求去获取到大量信息以及做许多事情。
 
-## 获取你的API KEY 
+## 获取你的 API KEY 
 
-首先，你需要去创建一个Twitch的API Key。许多API服务需要对访问者进行身份认证，以确保不会有人频繁的发起访问或者限制某些人访问某些的功能。
+首先，你需要去创建一个 Twitch 的API Key。许多 API 服务需要对访问者进行身份认证，以避免有人滥用 API，或者以限制某些人访问某些功能。
 
-请按照以下步骤获取你的API Key:
+请按照以下步骤获取你的 API Key:
 
 -   创建一个Twitch账号
 -   创建一个Twitch  [开发者账号][5]  \-> 右上角“通过Twitch注册”
 -   登录后跳转到信息中心
 -   “注册你自己的应用”
--   名称 -> 无所谓, Oauth 重定向 URL -> http://localhost, 类别 -> 无所谓
+-   名称 -> 随便填一个, Oauth 重定向 URL -> http://localhost, 类别 -> 随便选一个
 
-在屏幕底端，你现在就能看到你的client-id。请保留好client-id以备后面的使用。
+在屏幕底端，你可以看到你的 client-id，将它保存好，稍后会使用。
 
 ## 主播正在直播么？
 
-我们手上有了API key,我们现在就可以查询Twitch的API获取我们想要的信息，让我们开始用代码实现它吧。下面的代码给Twitch的API传递了正确的参数并且打印响应信息。
+我们手上有了 API key,我们现在就可以查询 Twitc h的 API 获取我们想要的信息，让我们开始用代码实现它吧。下面的代码给 Twitch 的 API 传递了正确的参数并且打印响应信息。
 
 ```python
 # requests is the go to package in python to make http request
@@ -104,9 +104,9 @@ params = {"user_login": "Solary"}
 }
 ```
 
-这个数据格式是一种易于阅读的JSON格式。`data`是一个包含所有当前直播的数组对象。`type`键表示这个直播间正在直播，此外`type`的值还可以为空。（比如，在报错的时候）
+这个数据格式是一种易于阅读的 JSON 格式。`data` 是一个包含所有当前直播的数组对象。`type` 键表示这个直播间正在直播，此外 `type` 的值还可以为空。（比如，在报错的时候）
 
-因此如果我们想要在Python里创建一个表示当前主播是否正在直播的布尔变量，我们需要去加上如下代码：
+因此如果我们想要在 Python 里创建一个表示当前主播是否正在直播的布尔变量，我们需要去加上如下代码：
 
 ```python
 json_response = response.json()
@@ -121,7 +121,7 @@ at_least_one_stream_active = any(streams_active)
 
 ```
 
-此时，`at_least_one_stream_active`变量是True的时候表示你喜欢的主播正在直播。
+此时，`at_least_one_stream_active` 变量是 True 的时候表示你喜欢的主播正在直播。
 
 让我们现在看看如何获得短信通知。
 
