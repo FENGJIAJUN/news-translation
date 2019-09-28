@@ -127,11 +127,11 @@ at_least_one_stream_active = any(streams_active)
 
 # 给我现在发一条短信！
 
-那么为了给我们自己发送一条短信，我们将使用Twilio API。访问[there][8] 并且创建一个账号。当需要你手机验证的时候，填入你想要在此项目中接受短信的手机号码。这样你就可以使用Twilio为新用户提供的15美元的免费信用额度。一条短信1美分，足以支撑你的机器运行一年了。
+那么为了给我们自己发送一条短信，我们将使用 Twilio API。访问[there][8] 并且创建一个账号。当需要你手机验证的时候，填入你想要在此项目中接受短信的手机号码。这样你就可以使用 Twilio 为新用户提供的 15 美元的免费信用额度。一条短信1美分，足以支撑你的机器运行一年了。
 
-当你你访问[console][9]，你将会看到自己的`Account SID`和`Auth Token`。请保留好他们以备后用。同时点击红色按钮"Get My Trial Number"，进行下一步，将trial number也保存以备后用。
+访问[console][9]，你将会看到自己的Account SID和Auth Token。请保留好它们以备后用。同时点击红色按钮"获得试用账号"，进行下一步，将试用账号也保存好以备后用。
 
-使用Python API发送短信是一件很容易的事，他们提供软件包帮你去完成发送短信的事。使用`pip install Twilio`导入相应的包并且执行下面的代码：
+使用 Python API 发送短信很简单，有软件包帮你一系列事情。使用 `pip install Twilio` 导入相应的包并且执行下面的代码：
 
 ```python
 from twilio.rest import Client
@@ -141,11 +141,11 @@ client.messages.create(
 
 ```
 
-这就是你需要发送一条短信的所有代码，惊奇么？
+只需要这么点代码，你就可以给自己发一条通知短信了，是不是很棒？
 
-# 把所有的代码放到一起
+# 整合所有代码
 
-我们将会把所有的Python代码压缩到只有30行
+现在我们来整合所有代码，压缩到不到 30 行 Python 代码。
 
 ```python
 import requests
@@ -170,9 +170,9 @@ if at_least_one_stream_active:
 
 这段代码的效果很好，但是如果这段代码在服务器上每分钟执行一次，我们喜欢的主播一开启直播，我们就会每分钟都收到一条短信。
 
-我们需要一个方法去存储我们的主播已经上线的事实并且不再去短信通知。
+我们需要让程序知道它已经给我们发了主播上线直播的短信通知，别再重复发短信了。
 
-好的消息是Twilio API提供检索历史消息的方法，因此我们仅仅需要检索发送的历史消息中是否包含我们已经发送过的主播正在直播的消息。
+好的消息是 Twilio API 提供检索历史消息的方法，因此我们仅仅需要检索发送的历史消息中是否包含我们已经发送过的主播正在直播的消息。
 
 如下是我们要做的伪代码：
 
@@ -222,30 +222,30 @@ else:
 
 完成了！
 
-你现在拥有一段不到30行的Python代码，可以在你喜欢的主播上线或者离线的时候发送短信通知给你而且不会重复发送信息给你。
+你现在拥有一段不到 30 行的 Python 代码，可以在你喜欢的主播上线或者离线的时候发送短信通知给你而且不会重复发送信息给你。
 
 我们现在需要一种方法去托管代码，并且每X分钟执行一次这个程序。
 
 # 托管代码的需求
 
-我们将使用Heroku去托管、执行该代码。Heroku是一种简便的托管app到web的方式。Heroku的缺点是比起其他的解决方案，价格方面会昂贵一些。幸运的是，他们有一个慷慨的免费计划允许我们做我们所有想做的事。
+我们将使用 Heroku 去托管、执行该代码。Heroku 是一种简便的托管 app 到 web 的方式。Heroku 的缺点是比起其他的解决方案，价格方面会昂贵一些。幸运的是，他们有一个慷慨的免费计划允许我们做我们所有想做的事。
 
-如果你没有准备好，你需要创建一个[Heroku 账户][12]. 你同时也需要 [下载并且安装Heroku客户端][13]。
+如果你之前没有[Heroku 账户][12]，那就创建一个吧。你同时也需要 [下载并且安装Heroku客户端][13]。
 
-现在你需要将你的Python脚本放到自己的文件夹内，记得加一个`requirements.txt`文件在里面。文件内容的开头如下：
+现在你需要将你的 Python 脚本放到自己的文件夹内，记得加一个 `requirements.txt` 文件在里面。文件内容的开头如下：
 
 ```
 requests
 twilio
 ```
 
-这样可以确保Heroku下载正确的依赖程序。
+这样可以确保 Heroku 下载正确的依赖程序。
 
-`cd`进入到该文件夹内同时执行`heroku create --app &lt;app name&gt;`。
+`cd` 进入到该文件夹内同时执行 `heroku create --app &lt;app name&gt;`。
 
-如果你进入到你的[app dashboard][14] 你将会看到你的新APP。
+如果你进入到你的[app dashboard][14] 你将会看到你的新 APP。
 
-我们现在需要去初始化一个git仓库并且push代码到Heroku：
+我们现在需要去初始化一个 git 仓库并且 push 代码到 Heroku：
 
 ```
 git init
@@ -255,47 +255,47 @@ git commit -am 'Deploy breakthrough script'
 git push heroku master
 ```
 
-如今你的app已经传到Heroku，但是它还不可以干任何事。由于这个小脚本无法接受HTTP请求，访问`<app name>.herokuapp.com`没法做任何事。但是这并不是一个问题。
+如今你的 app 已经传到 Heroku，但是它还不可以干任何事。由于这个小脚本无法接受 HTTP 请求，访问 `<app name>.herokuapp.com` 没法做任何事。但是这并不是一个问题。
 
-为了让这个脚本全天候执行。我们需要一个简单的Heroku附加操作"Heroku Scheduler"。为了安装这个附加操作，在你的app操作空间点击"Configure Add-ons"。
+为了让这个脚本全天候执行，我们需要使用一个简单的 Heroku 插件"Heroku Scheduler"。在你的 app 操作空间点击 "Configure Add-ons" 来安装插件。
 
 ![](https://www.freecodecamp.org/news/content/images/2019/08/Capture-d-e-cran-2019-08-15-a--12.50.40.png)
 
-接下来在搜索框输入Heroku Scheduler：
+接下来在搜索框输入 Heroku Scheduler：
 
 ![](https://www.freecodecamp.org/news/content/images/2019/08/Capture-d-e-cran-2019-08-15-a--12.53.12.png)
 
-点击搜索结果，并且按下"Provision"按钮
+点击搜索结果，并且按下 'Provision' 按钮
 
 ![](https://www.freecodecamp.org/news/content/images/2019/08/Capture-d-e-cran-2019-08-15-a--12.50.59.png)
 
-如果你返回到你的APP主界面，你将会看到Heroku Scheduler：
+如果你返回到你的 APP 主界面，你将会看到 Heroku Scheduler：
 
 ![](https://www.freecodecamp.org/news/content/images/2019/08/Capture-d-e-cran-2019-08-15-a--12.54.16.png)
 
-点击”Heroku Scheduler“链接去配置一个任务，点击”Create Job“按钮，在这里选择"10 minutes"的选项，之后选择执行命令`python &lt;name_of_your_script&gt;.py`，最终红点击"Save job"按钮。
+点击 'Heroku Scheduler' 链接去配置一个任务，点击 'Create Job' 按钮，在这里选择 '10 minutes' 的选项，之后选择执行命令 `python &lt;name_of_your_script&gt;.py`，最终红点击 'Save job' 按钮。
 
-虽然到目前为止我们在Heroku上使用的所有东西都是免费的，但是Heroku Scheduler将会花费25美元每个月。而我们的程序是要秒级执行的。因为该脚本需要每3秒执行一次，所以每10分钟运行该项目，一个月下来将会花费12美分。
+虽然到目前为止我们在 Heroku 上使用的所有东西都是免费的，但是 Heroku Scheduler 将会花费 25 美元每个月。而我们的程序是要秒级执行的。因为该脚本需要每  3 秒执行一次，所以每 10 分钟运行该项目，一个月下来将会花费 12 美分。
 
 # 建议
 
-我希望你喜欢这个项目，并且感兴趣将它部署你的服务器上。在这不到30行代码里我们只做了一点事情，这整个事情想要达到完美级别还很远。这里我有一些改善的建议：
+我希望你喜欢这个项目，并且喜欢自己动手操作的过程。我们通过这不到 30 行代码实现了很多功能。不过这个项目还不够完美，这里我有一些改善的建议：
 
 -   发送更多的关于当前直播的信息（正在打的游戏，围观者数等）
 -   当主播下线的时候，发送直播时长
 -   不仅仅去发送短信，还可以发送邮件
 -   同时去监控多个主播
 
-如果你有更好的意见，不要忘了去告诉我。
+如果你有其他好主意，欢迎留言告诉我
 
 # 结论
 
-我希望你喜欢上这篇文章并且通过这篇文章学到东西。我确切的希望这种项目是一种最好的方式去学习新的工具和概念，我最近浏览了一个网站[web scraping API][15]，通过它们我学习到了很多知识。
+我希望你喜欢上这篇文章并且通过这篇文章学到东西。我相信这样的项目是学习新工具和新概念的最好方式。最近我做了[web scraping API][15]，在做的过程中我也学到很多。
 
 如果你喜欢这种学习方式并且你想要做更多的事情，请在评论区留言。
 
-我有许多别的想法，并且我希望你将会喜欢上它们。不要犹豫去分享你使用这段代码构建的其他项目，这些项目可以去做更多的事。
-编码快乐.
+我有许多别的想法，并且我希望你将会喜欢上它们。如果你使用这段代码实现了别的东西，请一定分享给我啊。我相信这段代码有很多可能性。
+Happy Coding.
 
 Pierre
 
